@@ -64,12 +64,12 @@ BEGIN
 
 
 	REPORT "reading slash at s0";
-	s_input <= "00101111"; -- slash
+	s_input <= SLASH_CHARACTER; -- slash
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '0') REPORT "When reading a slash at s0, s0 -> s1, the output should be '0'" SEVERITY ERROR;	
 
 	REPORT "reading star at s1";
-	s_input <= "00101010"; -- star
+	s_input <= STAR_CHARACTER; -- star
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '0') REPORT "When reading a star at s1, s1 -> s2, the output should be '0'" SEVERITY ERROR;
 
@@ -79,17 +79,17 @@ BEGIN
 	ASSERT (s_output = '1') REPORT "When reading a meaningless character at s2, s2 -> s2, the output should be '1'" SEVERITY ERROR;
 
 	REPORT "reading new line at s2";
-	s_input <= "00001010"; -- new line
+	s_input <= NEW_LINE_CHARACTER; -- new line
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '1') REPORT "When reading a new line at s2, s2 -> s2, the output should be '1'" SEVERITY ERROR;
 
 	REPORT "reading slash at s2";
-	s_input <= "00101111"; -- slash
+	s_input <= SLASH_CHARACTER; -- slash
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '1') REPORT "When reading a slash at s2, s2 -> s2, the output should be '1'" SEVERITY ERROR;
 
 	REPORT "reading star at s2";
-	s_input <= "00101010"; -- star
+	s_input <= STAR_CHARACTER; -- star
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '1') REPORT "When reading a star at s2, s2 -> s4, the output should be '1'" SEVERITY ERROR;
 
@@ -99,27 +99,27 @@ BEGIN
 	ASSERT (s_output = '1') REPORT "When reading a meaningless character at s4, s4 -> s2, the output should be '1'" SEVERITY ERROR;
 
 	REPORT "reading star at s2";
-	s_input <= "00101010"; -- star
+	s_input <= STAR_CHARACTER; -- star
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '1') REPORT "When reading a star at s2, s2 -> s4, the output should be '1'" SEVERITY ERROR;
 
 	REPORT "reading new line at s4";
-	s_input <= "00001010"; -- new line
+	s_input <= NEW_LINE_CHARACTER; -- new line
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '1') REPORT "When reading a new line at s4, s4 -> s2, the output should be '1'" SEVERITY ERROR;
 
 	REPORT "reading star at s2";
-	s_input <= "00101010"; -- star
+	s_input <= STAR_CHARACTER; -- star
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '1') REPORT "When reading a star at s2, s2 -> s4, the output should be '1'" SEVERITY ERROR;
 
 	REPORT "reading star at s4";
-	s_input <= "00101010"; -- star
+	s_input <= STAR_CHARACTER; -- star
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '1') REPORT "When reading a star at s4, s4 -> s4, the output should be '1'" SEVERITY ERROR;
 
 	REPORT "reading slash at s4";
-	s_input <= "00101111"; -- slash
+	s_input <= SLASH_CHARACTER; -- slash
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '1') REPORT "When reading a slash at s4, s4 -> s0, the output should be '1'" SEVERITY ERROR;
 	
@@ -132,17 +132,17 @@ BEGIN
 	--WAIT FOR 1 * clk_period;
 
 	REPORT "reading star at s0";
-	s_input <= "00101010"; -- star
+	s_input <= STAR_CHARACTER; -- star
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '0') REPORT "When reading a star at s0, s0 -> s0, the output should be '0'" SEVERITY ERROR;
 
 	REPORT "reading new line at s0";
-	s_input <= "00001010"; -- new line
+	s_input <= NEW_LINE_CHARACTER; -- new line
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '0') REPORT "When reading a new line at s0, s0 -> s0, the output should be '0'" SEVERITY ERROR;
 
 	REPORT "reading slash at s0";
-	s_input <= "00101111"; -- slash
+	s_input <= SLASH_CHARACTER; -- slash
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '0') REPORT "When reading a slash at s0, s0 -> s1, the output should be '0'" SEVERITY ERROR;
 
@@ -152,22 +152,22 @@ BEGIN
 	ASSERT (s_output = '0') REPORT "When reading a meaningless character at s1, s1 -> s0, the output should be '0'" SEVERITY ERROR;
 
 	REPORT "reading slash at s0";
-	s_input <= "00101111"; -- slash
+	s_input <= SLASH_CHARACTER; -- slash
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '0') REPORT "When reading a slash at s0, s0 -> s1, the output should be '0'" SEVERITY ERROR;
 
 	REPORT "reading new line at s1";
-	s_input <= "00001010"; -- new line
+	s_input <= NEW_LINE_CHARACTER; -- new line
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '0') REPORT "When reading a new line at s1, s1 -> s0, the output should be '0'" SEVERITY ERROR;
 
 	REPORT "reading slash at s0";
-	s_input <= "00101111"; -- slash
+	s_input <= SLASH_CHARACTER; -- slash
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '0') REPORT "When reading a slash at s0, s0 -> s1, the output should be '0'" SEVERITY ERROR;
 
 	REPORT "reading slash at s1";
-	s_input <= "00101111"; -- slash
+	s_input <= SLASH_CHARACTER; -- slash
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '0') REPORT "When reading a slash at s1, s1 -> s3, the output should be '0'" SEVERITY ERROR;
 
@@ -177,17 +177,17 @@ BEGIN
 	ASSERT (s_output = '1') REPORT "When reading a meaningless character at s3, s3 -> s3, the output should be '1'" SEVERITY ERROR;
 
 	REPORT "reading slash at s3";
-	s_input <= "00101111"; -- slash
+	s_input <= SLASH_CHARACTER; -- slash
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '1') REPORT "When reading a slash at s3, s3 -> s3, the output should be '1'" SEVERITY ERROR;
 
 	REPORT "reading star at s3";
-	s_input <= "00101010"; -- star
+	s_input <= STAR_CHARACTER; -- star
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '1') REPORT "When reading a star at s3, s3 -> s3, the output should be '1'" SEVERITY ERROR;
 
 	REPORT "reading new line at s3";
-	s_input <= "00001010"; -- new line
+	s_input <= NEW_LINE_CHARACTER; -- new line
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '1') REPORT "When reading a new line at s3, s3 -> s0, the output should be '1'" SEVERITY ERROR;
 	
