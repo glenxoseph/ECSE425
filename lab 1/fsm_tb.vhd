@@ -22,6 +22,7 @@ CONSTANT clk_period : time := 1 ns;
 CONSTANT SLASH_CHARACTER : std_logic_vector(7 downto 0) := "00101111";
 CONSTANT STAR_CHARACTER : std_logic_vector(7 downto 0) := "00101010";
 CONSTANT NEW_LINE_CHARACTER : std_logic_vector(7 downto 0) := "00001010";
+CONSTANT X : std_logic_vector(7 downto 0) := "01011000";
 
 BEGIN
 dut: comments_fsm
@@ -47,15 +48,25 @@ BEGIN
     
 	--WAIT;
 
+	--	   X / * X \n / * X * \n * * /
+	--output:  0 0 0 1 1  1 1 1 1 1  1 1 1
+	--state:   0 1 2 2 2  2 4 2 4 2  4 4 0 
+	
+	s_reset <= '1';
+	WAIT FOR 1 * clk_period;
+	s_reset <= '0';
+	WAIT FOR 1 * clk_period;
+
 	REPORT "reading meaningless at s0";
 	s_input <= "01011000";
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '0') REPORT "When reading a meaningless character at s0, s0 -> s0, the output should be '0'" SEVERITY ERROR;
 
+
 	REPORT "reading slash at s0";
 	s_input <= "00101111"; -- slash
 	WAIT FOR 1 * clk_period;
-	ASSERT (s_output = '0') REPORT "When reading a slash at s0, s0 -> s1, the output should be '0'" SEVERITY ERROR;
+	ASSERT (s_output = '0') REPORT "When reading a slash at s0, s0 -> s1, the output should be '0'" SEVERITY ERROR;	
 
 	REPORT "reading star at s1";
 	s_input <= "00101010"; -- star
@@ -111,10 +122,14 @@ BEGIN
 	s_input <= "00101111"; -- slash
 	WAIT FOR 1 * clk_period;
 	ASSERT (s_output = '1') REPORT "When reading a slash at s4, s4 -> s0, the output should be '1'" SEVERITY ERROR;
-
-	REPORT "_______________________";
-    
-	WAIT;
+	
+	--        * \n / X / \n / / X / * \n
+	--output: 0 0  0 0 0  0 0 0 1 1 1 1
+	--state:  0 0  1 0 1 0  1 3 3 3 3 0
+	--s_reset <= '1';
+	--WAIT FOR 1 * clk_period;
+	--s_reset <= '0';
+	--WAIT FOR 1 * clk_period;
 
 	REPORT "reading star at s0";
 	s_input <= "00101010"; -- star

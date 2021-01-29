@@ -28,6 +28,7 @@ process (clk, reset)
 begin
   if reset = '1' then
     state <= s0;
+
   elsif (clk'event and clk = '1') then
     case state is 
       when s0 => 

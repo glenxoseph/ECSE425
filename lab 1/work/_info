@@ -1,0 +1,91 @@
+m255
+K4
+z2
+!s11e vcom 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dE:/
+Ecomments_fsm
+Z0 w1611920708
+Z1 DPx4 ieee 11 numeric_std 0 22 aU^R8eGcicLcUFIaBQSL>3
+Z2 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z3 DPx4 ieee 14 std_logic_1164 0 22 cVAk:aDinOX8^VGI1ekP<3
+!i122 46
+Z4 dC:/Users/Administrator/Documents/GitHub/ECSE425/lab 1
+Z5 8fsm.vhd
+Z6 Ffsm.vhd
+l0
+L6 1
+VO0]aFJQL^_=a7<L@diSJ[1
+!s100 8=ZD8]48;k_fm406>Zj^M1
+Z7 OV;C;2020.1;71
+32
+Z8 !s110 1611922197
+!i10b 1
+Z9 !s108 1611922196.000000
+Z10 !s90 -reportprogress|300|fsm.vhd|
+Z11 !s107 fsm.vhd|
+!i113 1
+Z12 tExplicit 1 CvgOpt 0
+Abehavioral
+R1
+R2
+R3
+DEx4 work 12 comments_fsm 0 22 O0]aFJQL^_=a7<L@diSJ[1
+!i122 46
+l24
+L14 73
+VHXWlfH1?^34O2JLkg>[hX0
+!s100 9AKMY@<oLO14KomOKm=lX1
+R7
+32
+R8
+!i10b 1
+R9
+R10
+R11
+!i113 1
+R12
+Efsm_tb
+Z13 w1611922190
+R2
+R3
+!i122 47
+R4
+Z14 8fsm_tb.vhd
+Z15 Ffsm_tb.vhd
+l0
+L4 1
+VTLJfDBz]5fkDA74AdBjcH2
+!s100 RKDUZ0cXoY6_4:LXVza1h2
+R7
+32
+Z16 !s110 1611922198
+!i10b 1
+Z17 !s108 1611922197.000000
+Z18 !s90 -reportprogress|300|fsm_tb.vhd|
+Z19 !s107 fsm_tb.vhd|
+!i113 1
+R12
+Abehaviour
+R2
+R3
+Z20 DEx4 work 6 fsm_tb 0 22 TLJfDBz]5fkDA74AdBjcH2
+!i122 47
+l27
+L7 193
+Vn_ZL==jZ<Sf6]_3@z[h1:2
+!s100 J3`hT<ikKIZ;hPYSlFl=i3
+R7
+32
+R16
+!i10b 1
+R17
+R18
+R19
+!i113 1
+R12
