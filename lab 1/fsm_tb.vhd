@@ -53,9 +53,9 @@ BEGIN
 	--state:   0 1 2 2 2  2 4 2 4 2  4 4 0 
 	
 	s_reset <= '1';
-	WAIT FOR 1 * clk_period;
+	WAIT FOR 1 * clk_period/2;
 	s_reset <= '0';
-	WAIT FOR 1 * clk_period;
+	WAIT FOR 1 * clk_period/2;
 
 	REPORT "reading meaningless at s0";
 	s_input <= "01011000";
@@ -126,10 +126,10 @@ BEGIN
 	--        * \n / X / \n / / X / * \n
 	--output: 0 0  0 0 0  0 0 0 1 1 1 1
 	--state:  0 0  1 0 1 0  1 3 3 3 3 0
-	--s_reset <= '1';
-	--WAIT FOR 1 * clk_period;
-	--s_reset <= '0';
-	--WAIT FOR 1 * clk_period;
+	s_reset <= '1';
+	WAIT FOR 1 * clk_period/2;
+	s_reset <= '0';
+	WAIT FOR 1 * clk_period/2;
 
 	REPORT "reading star at s0";
 	s_input <= STAR_CHARACTER; -- star
