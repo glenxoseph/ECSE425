@@ -32,13 +32,7 @@ begin
     	
 
   elsif (clk'event and clk = '1') then
---    assert (state = s0) report "0";
---    assert (state = s1) report "1";
---    assert (state = s2) report "2";
---    assert (state = s3) report "3";
---    assert (state = s4) report "4";
---   report "################";
- case state is 
+    case state is 
       when s0 => 
 	if input = SLASH_CHARACTER then
 	  state <= s1;
@@ -48,10 +42,7 @@ begin
 	  output <= '0';
 	end if;
       when s1 =>
-	if input = NEW_LINE_CHARACTER then 
-	  state <= s0;
-	  output <= '0';
-	elsif input = SLASH_CHARACTER then 
+	if input = SLASH_CHARACTER then 
 	  state <= s3;
 	  output <= '0';
 	elsif input = STAR_CHARACTER then 
@@ -62,10 +53,7 @@ begin
 	  output <= '0';
 	end if;
       when s2 =>
-	if input = NEW_LINE_CHARACTER then 
-	  state <= s2;
-	  output <= '1'; 
-	elsif input = STAR_CHARACTER then 
+	if input = STAR_CHARACTER then 
 	  state <= s4;
 	  output <= '1';
 	else 
@@ -98,82 +86,3 @@ begin
 end process;
 
 end behavioral;
---    case state is 
---      when s0 => 
---	if input = SLASH_CHARACTER then
---	  prev_state <= state;
---	  state <= s1;
---	else
---	  prev_state <= state;
---	  state <= s0;
---	end if;
---      when s1 => 
---	if input <= STAR_CHARACTER then 
---	  prev_state <= state;
---	  state <= s2;
---	  
---	elsif input <= SLASH_CHARACTER then 
---	  prev_state <= state;
---	  state <= s3;
---	  
---	else
---	  prev_state <= state;
---	  state <= s0;
---	  
---	end if;
---      when s2 => 
---	if input = STAR_CHARACTER then 
---	  prev_state <= state;
---	  state <= s4;
---	  
---	else 
---	  prev_state <= state;
---	  state <= s2;
---	  
---	end if;
---      when s3 => 
---	if input = NEW_LINE_CHARACTER then 
---	  prev_state <= state;
---	  state <= s0;
---	  
---	else
---	  prev_state <= state;
---	  state <= s3;
---	  
---	end if; 
---      when s4 => 
---	if input = STAR_CHARACTER then 
---	  prev_state <= state;
---	  state <= s4;
---	  
---	elsif input = SLASH_CHARACTER then
---	  prev_state <= state;
---	  state <= s0;
---	  
---	else
---	  prev_state <= state; 
---	  state <= s2;
---	  
---	end if;
---      end case;
---    end if;
---
---
---end process;
---process (state)
---begin 
---	if prev_state = s0 then
---		output <= '0';
---	elsif prev_state = s1 then 
---		output <= '0';
---	elsif prev_state = s2 then
---		output <= '1';
---	elsif prev_state = s3 then
---		output <= '1';
---	elsif prev_state = s4 then 
---		output <= '1';
---	end if;
---
---end process;
---
---end behavioral;

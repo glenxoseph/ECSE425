@@ -10,11 +10,11 @@ z2
 cModel Technology
 dE:/
 Ecomments_fsm
-Z0 w1611931465
+Z0 w1612072861
 Z1 DPx4 ieee 11 numeric_std 0 22 aU^R8eGcicLcUFIaBQSL>3
 Z2 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
 Z3 DPx4 ieee 14 std_logic_1164 0 22 cVAk:aDinOX8^VGI1ekP<3
-!i122 107
+!i122 114
 Z4 dC:/Users/Administrator/Documents/GitHub/ECSE425/lab 1
 Z5 8fsm.vhd
 Z6 Ffsm.vhd
@@ -24,9 +24,9 @@ VO0]aFJQL^_=a7<L@diSJ[1
 !s100 8=ZD8]48;k_fm406>Zj^M1
 Z7 OV;C;2020.1;71
 32
-Z8 !s110 1611931474
+Z8 !s110 1612072999
 !i10b 1
-Z9 !s108 1611931473.000000
+Z9 !s108 1612072999.000000
 Z10 !s90 -reportprogress|300|fsm.vhd|
 Z11 !s107 fsm.vhd|
 !i113 1
@@ -36,11 +36,11 @@ R1
 R2
 R3
 DEx4 work 12 comments_fsm 0 22 O0]aFJQL^_=a7<L@diSJ[1
-!i122 107
+!i122 114
 l25
-L14 87
-V3P4>09e6GADFlnFnlm81F1
-!s100 ;YKjiIzbc9P?3AK<F^O[J1
+L14 75
+Ve]WcU]Y?HGSMXFN8i`Xh:0
+!s100 ag5O_UUz2H]L4ElhF^I`n1
 R7
 32
 R8
@@ -54,7 +54,7 @@ Efsm_tb
 Z13 w1611931382
 R2
 R3
-!i122 108
+!i122 115
 R4
 Z14 8fsm_tb.vhd
 Z15 Ffsm_tb.vhd
@@ -64,28 +64,28 @@ VTLJfDBz]5fkDA74AdBjcH2
 !s100 RKDUZ0cXoY6_4:LXVza1h2
 R7
 32
-Z16 !s110 1611931475
+Z16 !s110 1612073000
 !i10b 1
-Z17 !s108 1611931474.000000
-Z18 !s90 -reportprogress|300|fsm_tb.vhd|
-Z19 !s107 fsm_tb.vhd|
+R9
+Z17 !s90 -reportprogress|300|fsm_tb.vhd|
+Z18 !s107 fsm_tb.vhd|
 !i113 1
 R12
 Abehaviour
 R2
 R3
-Z20 DEx4 work 6 fsm_tb 0 22 TLJfDBz]5fkDA74AdBjcH2
-!i122 108
+Z19 DEx4 work 6 fsm_tb 0 22 TLJfDBz]5fkDA74AdBjcH2
+!i122 115
 l27
-Z21 L7 193
-Z22 VIOA2YDJ84?^logU92m;aM0
-Z23 !s100 5zN`SXl>]6^:QN?jk8j:B1
+Z20 L7 193
+Z21 VIOA2YDJ84?^logU92m;aM0
+Z22 !s100 5zN`SXl>]6^:QN?jk8j:B1
 R7
 32
 R16
 !i10b 1
+R9
 R17
 R18
-R19
 !i113 1
 R12

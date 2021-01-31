@@ -32,13 +32,7 @@ begin
     	
 
   elsif (clk'event and clk = '1') then
-    assert (state = s0) report "0";
-    assert (state = s1) report "1";
-    assert (state = s2) report "2";
-    assert (state = s3) report "3";
-    assert (state = s4) report "4";
-   report "################";
- case state is 
+    case state is 
       when s0 => 
 	if input = SLASH_CHARACTER then
 	  state <= s1;
@@ -48,10 +42,7 @@ begin
 	  output <= '0';
 	end if;
       when s1 =>
-	if input = NEW_LINE_CHARACTER then 
-	  state <= s0;
-	  output <= '0';
-	elsif input = SLASH_CHARACTER then 
+	if input = SLASH_CHARACTER then 
 	  state <= s3;
 	  output <= '0';
 	elsif input = STAR_CHARACTER then 
@@ -62,10 +53,7 @@ begin
 	  output <= '0';
 	end if;
       when s2 =>
-	if input = NEW_LINE_CHARACTER then 
-	  state <= s2;
-	  output <= '1'; 
-	elsif input = STAR_CHARACTER then 
+	if input = STAR_CHARACTER then 
 	  state <= s4;
 	  output <= '1';
 	else 
