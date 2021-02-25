@@ -4,7 +4,7 @@ use ieee.numeric_std.all;
 
 entity cache is
 generic(
-	ram_size : INTEGER := 32768;
+	ram_size : INTEGER := 32768
 );
 port(
 	clock : in std_logic;
@@ -30,10 +30,11 @@ end cache;
 architecture arch of cache is
 
 -- declare signals here
-type STATE_TYPE is (start,read_ready,write_ready,mem_read1,mem_write1,mem_read2,mem_write2,read_sate,write_state,mem_wait);
+type STATE_TYPE is (start,read_ready,write_ready,mem_read1,mem_write1,read_state,write_state);
 signal state : STATE_TYPE;
 signal next_state: STATE_TYPE;
-type cache_struct is array (0 to 31) of std_logic_vector (152 downto 0)
+type cache_structure is array (0 to 31) of std_logic_vector (152 downto 0);
+signal cache_struct : cache_structure;
 
 begin
 
@@ -44,48 +45,47 @@ begin
 			elsif (rising_edge(clock) and clock = '1') then 
 				state <= next_state;
 			end if;
-		end process
+		end process;
 
 	process (state,m_waitrequest,s_read,s_write)
 		variable idx : integer;
 		variable offset : integer := 0;
 		variable counter : integer := 0;
 		variable address : std_logic_vector (14 downto 0);
-		variable adr_tag : std_logic_vector (22 downto 0);
-		variable cache_tag : std_logic_vector (22 downto 0);
+
 		begin 
 			offset := to_integer(unsigned(s_addr(3 downto 2))); -- ignore the last 2 bit of offset
 			idx := to_integer(unsigned(s_addr(8 downto 4))); -- 5 bit index
-			adr_tag = to_integer(unsigned(s_addr(31 downto 9))); -- 23 bit tag
-			cache_tag = to_integer(unsigned(cache_struct(idx)(150 downto 128)));
+
+
 			
 			case state is 
 		
 				when start => 
 					s_waitrequest <= '1';
-					if s_write = '1' then 
+					if s_write = '1' and s_read = '0' then 
 						next_state <= write_ready;
-					elsif s_read = '1' then 
+					elsif s_read = '1' and s_write = '0' then 
 						next_state <= read_ready;
 					else 
 						next_state <= start;
 					end if;
 
 				when read_ready => 
-					if cache_struct(idx)(152) = '1' and adr_tag = cache_tag then--read hit
+					if cache_struct(idx)(152) = '1' and s_addr(31 downto 9) = cache_struct(idx)(150 downto 128) then--read hit
 						next_state <= read_state;
-					elsif (cache_struct(idx)(152) = '0' or adr_tag /= cache_tag) and cache_struct(idx)(151) = '1' then -- read miss,dirty 
+					elsif (cache_struct(idx)(152) = '0' or s_addr(31 downto 9) /= cache_struct(idx)(150 downto 128)) and cache_struct(idx)(151) = '1' then -- read miss,dirty 
 						next_state <= mem_write1;
-					elsif (cache_struct(idx)(152) = '0' or adr_tag /= cache_tag) and cache_struct(idx)(151) = '0' then -- read miss,clean
+					elsif (cache_struct(idx)(152) = '0' or s_addr(31 downto 9) /= cache_struct(idx)(150 downto 128)) and cache_struct(idx)(151) = '0' then -- read miss,clean
 						next_state <= mem_read1;
 					end if;
 				when write_ready => 
-					if cache_struct(idx)(152) = '1' and adr_tag = cache_tag then --write hit
+					if cache_struct(idx)(152) = '1' and s_addr(31 downto 9) = cache_struct(idx)(150 downto 128) then --write hit
 						next_state <= write_state;
-					elsif (cache_struct(idx)(152) = '0' or adr_tag /= cache_tag) and cache_struct(idx)(151) = '1' then -- write miss,dirty 
-						next_state <= mem_write2;
-					elsif (cache_struct(idx)(152) = '0' or adr_tag /= cache_tag) and cache_struct(idx)(151) = '0' then -- write miss,clean
-						next_state <= mem_read2;
+					elsif (cache_struct(idx)(152) = '0' or s_addr(31 downto 9) /= cache_struct(idx)(150 downto 128)) and cache_struct(idx)(151) = '1' then -- write miss,dirty 
+						next_state <= mem_write1;
+					elsif (cache_struct(idx)(152) = '0' or s_addr(31 downto 9) /= cache_struct(idx)(150 downto 128)) and cache_struct(idx)(151) = '0' then -- write miss,clean
+						next_state <= mem_read1;
 					end if;
 
 				when read_state => 
@@ -107,11 +107,11 @@ begin
 						m_addr <= to_integer(unsigned(address)) + counter;
 						m_write <= '1';
 						m_read <= '0';
-						m_writedata <= cache_struct(idx)(127 downto 0) ((8*count + 32*offset + 7) downto  (8*count + 32*offset));
+						m_writedata <= cache_struct(idx)(127 downto 0) ((8*counter + 32*offset + 7) downto  (8*counter + 32*offset));
 						counter := counter + 1;
 						next_state <= mem_write1;
 					elsif counter = 4 then 
-						counter := '0';
+						counter := 0;
 						m_write <= '0';
 						next_state <= mem_read1;
 					else	
@@ -124,14 +124,14 @@ begin
 						m_addr <= to_integer(unsigned(s_addr(14 downto 0))) + counter;
 						next_state <= mem_read1;
 					elsif m_waitrequest = '0' and counter <= 3 then  
-						cache_struct(idx)(127 downto 0) ((8*count + 32*offset + 7) downto (8*count + 32*offset)) <= m_readdata;	
+						cache_struct(idx)(127 downto 0) ((8*counter +32*offset + 7) downto (8*counter + 32*offset)) <= m_readdata;	
 						counter := counter + 1;
 						next_state <= mem_read1;
 					elsif counter = 4 then 
 						counter := 0;
 						cache_struct(idx)(152) <= '1';
 						cache_struct(idx)(151) <= '0';
-						cache_struct(idx)(150 downto 128) <= adr_tag;
+						cache_struct(idx)(150 downto 128) <= s_addr(31 downto 9);
 						m_read <= '0';
 						m_write <= '0';
 						next_state <= read_state;
@@ -139,10 +139,10 @@ begin
 						next_state <= mem_read1;
 					end if;
 					
-										
+				end case;					
 						
 
-	end process
+	end process;
 
 
 
