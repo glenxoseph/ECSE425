@@ -146,7 +146,6 @@ begin
     report "Test A";
 -- 0000, Invalid, Clean, Write, Miss
 -- brand new cache, everything is invalid/clean/miss
-
     s_addr <= "11111111111111111111111000001111";
     s_write <= '1';
     s_writedata <= x"000F000A";
@@ -161,13 +160,16 @@ begin
     s_read <= '0';
 
     WAIT FOR clk_period;
+
 --helper
     s_addr <= "01111111111111111111111000001111";
     s_write <= '1';
     s_writedata <= x"000F00AA";
     wait until rising_edge(s_waitrequest);
     s_write <= '0';
+
 -- x"000F000A" in memory
+
     WAIT FOR clk_period;
 
     reset <= '1';
@@ -175,6 +177,7 @@ begin
     s_write <= '0';
     WAIT FOR clk_period;
     reset <= '0';
+
 -- reset after this
 
     report "Test B";
@@ -200,7 +203,6 @@ begin
 
 -- 1001, Valid, Clean, Write, Hit
 -- this was read, so valid/hit
-
     s_addr <= "11111111111111111111111000001111";
     s_write <= '1';
     s_writedata <= x"000F000F";
@@ -209,7 +211,6 @@ begin
 
 -- 1111, Valid, Dirty, Read, Hit
 -- this was written, so dirty
-
     s_read <= '1';
     wait until rising_edge(s_waitrequest);
     assert s_readdata = x"000F000F" report "Test B3 FAILED" severity error;
@@ -219,7 +220,6 @@ begin
 
 -- 1101, Valid, Dirty, Write, Hit
 -- this was written, so dirty
-
     s_addr <= "11111111111111111111111000001111";
     s_write <= '1';
     s_writedata <= x"000F000E";
@@ -227,7 +227,6 @@ begin
     s_write <= '0';
 
 -- 1111, Valid, Dirty, Read, Hit
-
     s_read <= '1';
     wait until rising_edge(s_waitrequest);
     assert s_readdata = x"000F000E" report "Test B4 FAILED" severity error;
@@ -237,7 +236,6 @@ begin
 
 -- 1100, Valid, Dirty, Write, Miss
 -- this address is written, so valid and dirty, but the tag is missed
-
     s_addr <= "11111111111110111111111000001111";
     s_write <= '1';
     s_writedata <= x"000F000B";
@@ -245,7 +243,6 @@ begin
     s_write <= '0';
 
 -- 1111, Valid, Dirty, Read, Hit
-
     s_read <= '1';
     wait until rising_edge(s_waitrequest);
     assert s_readdata = x"000F000B" report "Test B5 FAILED" severity error;
@@ -259,14 +256,15 @@ begin
     s_writedata <= x"000F00BB";
     wait until rising_edge(s_waitrequest);
     s_write <= '0';
+
 -- x"000F000B" should be in memory
 
+-- reset
     reset <= '1';
     s_read <='0';
     s_write <= '0';
     WAIT FOR clk_period;
     reset <= '0';
--- reset
 
     WAIT FOR clk_period;
 
