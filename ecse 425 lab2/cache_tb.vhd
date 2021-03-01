@@ -21,7 +21,7 @@ port(
     s_readdata : out std_logic_vector (31 downto 0);
     s_write : in std_logic;
     s_writedata : in std_logic_vector (31 downto 0);
-    s_waitrequest : out std_logic; 
+    s_waitrequest : out std_logic;
 
     m_addr : out integer range 0 to ram_size-1;
     m_read : out std_logic;
@@ -32,7 +32,7 @@ port(
 );
 end component;
 
-component memory is 
+component memory is
 GENERIC(
     ram_size : INTEGER := 32768;
     mem_delay : time := 10 ns;
@@ -48,8 +48,8 @@ PORT (
     waitrequest: OUT STD_LOGIC
 );
 end component;
-	
--- test signals 
+
+-- test signals
 signal reset : std_logic := '0';
 signal clk : std_logic := '0';
 constant clk_period : time := 1 ns;
@@ -66,13 +66,13 @@ signal m_read : std_logic;
 signal m_readdata : std_logic_vector (7 downto 0);
 signal m_write : std_logic;
 signal m_writedata : std_logic_vector (7 downto 0);
-signal m_waitrequest : std_logic; 
+signal m_waitrequest : std_logic;
 
 begin
 
 -- Connect the components which we instantiated above to their
 -- respective signals.
-dut: cache 
+dut: cache
 port map(
     clock => clk,
     reset => reset,
@@ -102,7 +102,7 @@ port map (
     readdata => m_readdata,
     waitrequest => m_waitrequest
 );
-				
+
 
 clk_process : process
 begin
