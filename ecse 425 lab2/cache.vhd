@@ -30,129 +30,145 @@ end cache;
 architecture arch of cache is
 
 -- declare signals here
-type STATE_TYPE is (start,read_ready,write_ready,mem_read1,mem_write1,read_state,write_state);
+type STATE_TYPE is (start,read_ready,write_ready,mem_read1,mem_write1,read_state,write_state,read_memwait);
 signal state : STATE_TYPE;
-signal next_state: STATE_TYPE;
 type cache_structure is array (0 to 31) of std_logic_vector (152 downto 0);
-signal cache_struct : cache_structure;
-signal address: std_logic_vector (31 downto 0);
+signal cache_struct : cache_structure := (others=>(others=>'0'));
+signal address: std_logic_vector (14 downto 0);
 begin
 
-	process (clock, reset, s_write, s_read)
-		begin
-			if reset = '1' then
-				state <= start;
-				for i in 0 to 31 loop
-					cache_struct(i) <= (others => '1');
-				end loop;
-				-- set to high by default
-				s_waitrequest <= '1';
-			elsif (rising_edge(clock) and clock = '1') then
-				state <= next_state;
-			end if;
-		end process;
-
-	process (state,m_waitrequest,s_read,s_write)
+	process (clock, reset,s_read, s_write)
 		variable idx : integer range 0 TO 31;
 		variable offset : integer range 0 TO 3;
 		variable counter : integer range 0 TO 5;
-
-
-
+		variable is_read : integer range 0 to 1;
 		begin
-			offset := to_integer(unsigned(s_addr(3 downto 2))); -- ignore the last 2 bit of offset
-			idx := to_integer(unsigned(s_addr(8 downto 4))); -- 5 bit index
-
-
-
+			--report "begin process";
+			if reset = '1' then
+				state <= start;
+				report "reset";
+				cache_struct <= (others=>(others=>'0'));
+				-- set to high by default
+				s_waitrequest <= '1';
+			elsif (rising_edge(clock) and clock = '1') then
+				offset := to_integer(unsigned(s_addr(3 downto 2))); -- ignore the last 2 bit of offset
+				idx := to_integer(unsigned(s_addr(8 downto 4))); -- 5 bit index
+				
 			case state is
 
 				when start =>
+					report "start";
 					s_waitrequest <= '1';
 					if s_write = '1' and s_read = '0' then
-						report "next_state <= write_ready";
-						next_state <= write_ready;
+						report "state <= write_ready";
+						is_read := 0;					
+						state <= write_ready;
 					elsif s_read = '1' and s_write = '0' then
-						report "next_state <= read_ready";
-						next_state <= read_ready;
+						report "state <= read_ready";
+						is_read := 1;	
+						state <= read_ready;
 					else
-						next_state <= start;
+						state <= start;
+
 					end if;
 
 				when read_ready =>
 					if cache_struct(idx)(152) = '1' and s_addr(31 downto 9) = cache_struct(idx)(150 downto 128) then--read hit
-						report "next_state <= read_state";
-						next_state <= read_state;
+						report "state <= read_state";
+						state <= read_state;
 					elsif (cache_struct(idx)(152) = '0' or s_addr(31 downto 9) /= cache_struct(idx)(150 downto 128)) and cache_struct(idx)(151) = '1' then -- read miss,dirty
-						report "next_state <= mem_write1;";
-						next_state <= mem_write1;
+						report "state <= mem_write1;";
+						state <= mem_write1;
 					elsif (cache_struct(idx)(152) = '0' or s_addr(31 downto 9) /= cache_struct(idx)(150 downto 128)) and cache_struct(idx)(151) = '0' then -- read miss,clean
-						next_state <= mem_read1;
+						state <= mem_read1;
 					end if;
 				when write_ready =>
 					if cache_struct(idx)(152) = '1' and s_addr(31 downto 9) = cache_struct(idx)(150 downto 128) then --write hit
-						next_state <= write_state;
+						report "write hit";
+						state <= write_state;
 					elsif (cache_struct(idx)(152) = '0' or s_addr(31 downto 9) /= cache_struct(idx)(150 downto 128)) and cache_struct(idx)(151) = '1' then -- write miss,dirty
-						next_state <= mem_write1;
+						report "write miss,dirty";
+						state <= mem_write1;
 					elsif (cache_struct(idx)(152) = '0' or s_addr(31 downto 9) /= cache_struct(idx)(150 downto 128)) and cache_struct(idx)(151) = '0' then -- write miss,clean
-						next_state <= mem_read1;
+						 report "write miss,clean";
+						state <= mem_read1;
 					end if;
 
 				when read_state =>
+					report "read state";
 					s_readdata <= cache_struct(idx)(127 downto 0) ((32*(offset + 1)) - 1 downto 32*offset);
 					s_waitrequest <= '0';
-					next_state <= start;
-
+					state <= start;
+					report "finish read";
 				when write_state =>
+					report "write state";
 					cache_struct(idx)(152) <= '1';
 					cache_struct(idx)(151) <= '1';
 					cache_struct(idx)(150 downto 128) <= s_addr(31 downto 9);
 					cache_struct(idx)(127 downto 0)((32*(offset + 1)) - 1 downto 32*offset) <= s_writedata;
 					s_waitrequest <= '0';
-					next_state <= start;
+					state <= start;
 
 				when mem_write1 => --write data from cache to memory
+					report "mem_write1";
 					if counter <= 3 and m_waitrequest = '1' then
-						address <= "00000000000000000"&cache_struct(idx)(133 downto 128)&s_addr (8 downto 0);
+						address <= cache_struct(idx)(133 downto 128)&s_addr (8 downto 0);
 						m_addr <= to_integer(unsigned(address)) + counter;
 						m_write <= '1';
 						m_read <= '0';
 						m_writedata <= cache_struct(idx)(127 downto 0) ((8*counter + 32*offset + 7) downto  (8*counter + 32*offset));
 						counter := counter + 1;
-						next_state <= mem_write1;
+						state <= mem_write1;
 					elsif counter = 4 then
 						counter := 0;
 						m_write <= '0';
-						next_state <= mem_read1;
-					else
-						next_state <= mem_write1;
+						state <= mem_read1;
+					else	
+						m_write <= '0';
+						state <= mem_write1;
 					end if;
+
 				when mem_read1 => --read data from memory to cache
+					report "mem_read1";
 					if m_waitrequest = '1' then
+						report "m_waitrequest = '1'";
 						m_read <= '1';
 						m_write <= '0';
 						m_addr <= to_integer(unsigned(s_addr(14 downto 0))) + counter;
-						next_state <= mem_read1;
-					elsif m_waitrequest = '0' and counter <= 3 then
+						state <= read_memwait;
+					else
+						state <= mem_read1;
+					end if;
+
+				when read_memwait => 
+					report "wait mem read";
+					
+					if m_waitrequest = '0' and counter <= 3 then
+						report "m_waitrequest = '0'";
 						cache_struct(idx)(127 downto 0) ((8*counter +32*offset + 7) downto (8*counter + 32*offset)) <= m_readdata;
 						counter := counter + 1;
-						next_state <= mem_read1;
+						m_read <= '0';
+						state <= mem_read1;
 					elsif counter = 4 then
+						report "counter = 4";
 						counter := 0;
 						cache_struct(idx)(152) <= '1';
 						cache_struct(idx)(151) <= '0';
 						cache_struct(idx)(150 downto 128) <= s_addr(31 downto 9);
 						m_read <= '0';
 						m_write <= '0';
-						next_state <= read_state;
-					else
-						next_state <= mem_read1;
+						if is_read = 1 then 
+							state <= read_state;
+						elsif is_read = 0 then 
+							state <= write_state;
+						end if;
+					else 
+						state <= read_memwait;
 					end if;
-
 				end case;
 
-
-	end process;
+			end if;
+		end process;
 
 
 
