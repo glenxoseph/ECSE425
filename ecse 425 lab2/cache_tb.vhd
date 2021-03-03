@@ -9,7 +9,7 @@ architecture behavior of cache_tb is
 
 component cache is
 generic(
-    ram_size : INTEGER := 32768;
+    ram_size : INTEGER := 32768
 );
 port(
     clock : in std_logic;
@@ -149,31 +149,35 @@ begin
     s_addr <= "11111111111111111111111000001111";
     s_write <= '1';
     s_writedata <= x"000F000A";
-    wait until rising_edge(s_waitrequest);
+    wait until falling_edge(s_waitrequest);
     s_write <= '0';
+
 
 -- 1111, Valid, Dirty, Read, Hit
 -- this was written, so valid/dirty/hit
     s_read <= '1';
-    wait until rising_edge(s_waitrequest);
+    wait until falling_edge(s_waitrequest);
     assert s_readdata = x"000F000A" report "Test A FAILED" severity error;
     s_read <= '0';
 
     WAIT FOR clk_period;
 
+	
+
 --helper
-    s_addr <= "01111111111111111111111000001111";
+    s_addr <= "11111111111111111111110000001111";
     s_write <= '1';
     s_writedata <= x"000F00AA";
-    wait until rising_edge(s_waitrequest);
+    wait until falling_edge(s_waitrequest);
     s_write <= '0';
+
 
 -- x"000F000A" in memory
 
     WAIT FOR clk_period;
 
     reset <= '1';
-    s_read <='0';
+    s_read <='0'; 
     s_write <= '0';
     WAIT FOR clk_period;
     reset <= '0';
@@ -182,10 +186,10 @@ begin
 
     report "Test B";
 -- 0010, Invalid, Clean, Read, Miss
--- brand new cache, everything is invalid/clean/miss
+-- brand new cache, everything  is invalid/clean/miss
     s_read <= '1';
     s_addr <= "11111111111111111111111000001111";
-    wait until rising_edge(s_waitrequest);
+    wait until falling_edge(s_waitrequest);
     assert s_readdata = x"000F000A" report "Test B1 FAILED" severity error;
     s_read <= '0';
 
@@ -195,9 +199,10 @@ begin
 -- already read, so valid/hit
     s_read <= '1';
     s_addr <= "11111111111111111111111000001111";
-    wait until rising_edge(s_waitrequest);
+    wait until falling_edge(s_waitrequest);
     assert s_readdata = x"000F000A" report "Test B2 FAILED" severity error;
     s_read <= '0';
+
 
     WAIT FOR clk_period;
 
@@ -206,55 +211,60 @@ begin
     s_addr <= "11111111111111111111111000001111";
     s_write <= '1';
     s_writedata <= x"000F000F";
-    wait until rising_edge(s_waitrequest);
+    wait until falling_edge(s_waitrequest);
     s_write <= '0';
 
 -- 1111, Valid, Dirty, Read, Hit
 -- this was written, so dirty
     s_read <= '1';
-    wait until rising_edge(s_waitrequest);
+    wait until falling_edge(s_waitrequest);
     assert s_readdata = x"000F000F" report "Test B3 FAILED" severity error;
     s_read <= '0';
 
     WAIT FOR clk_period;
+
+
 
 -- 1101, Valid, Dirty, Write, Hit
 -- this was written, so dirty
     s_addr <= "11111111111111111111111000001111";
     s_write <= '1';
     s_writedata <= x"000F000E";
-    wait until rising_edge(s_waitrequest);
+    wait until falling_edge(s_waitrequest);
     s_write <= '0';
 
 -- 1111, Valid, Dirty, Read, Hit
     s_read <= '1';
-    wait until rising_edge(s_waitrequest);
+    wait until falling_edge(s_waitrequest);
     assert s_readdata = x"000F000E" report "Test B4 FAILED" severity error;
     s_read <= '0';
 
     WAIT FOR clk_period;
 
+
 -- 1100, Valid, Dirty, Write, Miss
 -- this address is written, so valid and dirty, but the tag is missed
-    s_addr <= "11111111111110111111111000001111";
+    s_addr <= "11111111111111111111101000001111";
     s_write <= '1';
     s_writedata <= x"000F000B";
-    wait until rising_edge(s_waitrequest);
+    wait until falling_edge(s_waitrequest);
     s_write <= '0';
 
 -- 1111, Valid, Dirty, Read, Hit
     s_read <= '1';
-    wait until rising_edge(s_waitrequest);
+    wait until falling_edge(s_waitrequest);
     assert s_readdata = x"000F000B" report "Test B5 FAILED" severity error;
     s_read <= '0';
 
     WAIT FOR clk_period;
 
+
+
 -- helper
-    s_addr <= "01111111111110111111111000001111";
+    s_addr <= "11111111111111111011111000001111";
     s_write <= '1';
     s_writedata <= x"000F00BB";
-    wait until rising_edge(s_waitrequest);
+    wait until falling_edge(s_waitrequest);
     s_write <= '0';
 
 -- x"000F000B" should be in memory
@@ -273,30 +283,32 @@ begin
 -- 0010, Invalid, Clean, Read, Miss
 -- brand new cache, everything is invalid/clean/miss
     s_read <= '1';
-    s_addr <= "11111111111110111111111000001111";
-    wait until rising_edge(s_waitrequest);
+    s_addr <= "11111111111111111111101000001111";
+    wait until falling_edge(s_waitrequest);
     assert s_readdata = x"000F000B" report "Test C FAILED" severity error;
     s_read <= '0';
+
+WAIT FOR clk_period;
 
 -- 1010, Valid, Clean, Read, Miss
 -- after first read, this address is valid, we use another tag so we miss
     s_read <= '1';
     s_addr <= "11111111111111111111111000001111";
-    wait until rising_edge(s_waitrequest);
+    wait until falling_edge(s_waitrequest);
     assert s_readdata = x"000F000E" report "Test C1 FAILED" severity error;
     s_read <= '0';
 
 -- 1000, Valid, Clean, Write, Miss
 -- after first read, this address is valid, we use another tag so we miss
-    s_addr <= "11111111111100111111111000001111";
+    s_addr <= "11111111111111111110111000001111";
     s_write <= '1';
     s_writedata <= x"000F00AA";
-    wait until rising_edge(s_waitrequest);
+    wait until falling_edge(s_waitrequest);
     s_write <= '0';
-
+WAIT FOR clk_period;
 -- 1111, Valid, Dirty, Read, Hit
     s_read <= '1';
-    wait until rising_edge(s_waitrequest);
+    wait until falling_edge(s_waitrequest);
     assert s_readdata = x"000F00AA" report "Test C2 FAILED" severity error;
     s_read <= '0';
 
@@ -304,13 +316,15 @@ begin
 
 -- 1110, Valid, Dirty, Read, Miss
 -- after first read, this address is valid, we use another tag so we miss
-    s_addr <= "11111111111111111111111000001111";
+    s_addr <= "11111111111111111111101000001111";
     s_read <= '1';
-    wait until rising_edge(s_waitrequest);
-    assert s_readdata = x"000F000E" report "Test C3 FAILED" severity error;
+    wait until falling_edge(s_waitrequest);
+    assert s_readdata = x"000F000B" report "Test C3 FAILED" severity error;
     s_read <= '0';
 
     WAIT FOR clk_period;
+
+    assert false report "Test: OK" severity failure;
 
 end process;
 
