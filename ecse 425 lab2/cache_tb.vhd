@@ -249,7 +249,7 @@ begin
     s_writedata <= x"000F000B";
     wait until falling_edge(s_waitrequest);
     s_write <= '0';
-
+    WAIT FOR clk_period;
 -- 1111, Valid, Dirty, Read, Hit
     s_read <= '1';
     wait until falling_edge(s_waitrequest);
@@ -297,7 +297,7 @@ WAIT FOR clk_period;
     wait until falling_edge(s_waitrequest);
     assert s_readdata = x"000F000E" report "Test C1 FAILED" severity error;
     s_read <= '0';
-
+WAIT FOR clk_period;
 -- 1000, Valid, Clean, Write, Miss
 -- after first read, this address is valid, we use another tag so we miss
     s_addr <= "11111111111111111110111000001111";
